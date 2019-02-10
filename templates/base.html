@@ -1,76 +1,24 @@
 <!doctype html>
 <html>
+
     <head>
         <title>{{title}}</title>
-        <style>
-            html {
-                background-color: silver
-            }
-            body {
-                width: 1020px;
-                margin: auto;
-                background-color: white;
-            }
-            ul {
-                list-style: none;
-            }
-            #main {
-                width: 960px;
-            }
-            .nav {
-                float: left;
-                padding: 15px;            
-            }
-            .single {
-                padding:15px;
-            }
-            table {
-                padding: 15px;
-            }
-            input[type=submit] {
-                clear: left;
-                margin-top: 15px;
-                width: 100px;
-                background-color:darkturquoise;
-                color: white;
-            }
-            h1 {
-                font-size: 2.5em;
-            }
-            .error {
-                color: red;
-                font-size: .9em;
-                font-style: italic;
-                list-style: none;
-            }
-            .title {
-                font-size: 1.6em;
-                font-weight: bold;
-            }
-            .center {
-                clear: both;
-                text-align: center;
-            }
+        <link rel= "stylesheet" type= "text/css" 
+            href= "{{ url_for('static', filename='bab_style.css')}}">
 
-        </style>
     </head>
-<body>
-    <div id="main">
-        <div class="nav">
-                <a href="/blog">Main Blog Page</a> | <a href="/newpost">Add a Blog Entry</a>
-            </div>
-            <br>
+    <body>
+        <div id="main">
+            <div class="nav">
+                    <a href="/blog">Main Blog Page</a> | <a href="/newpost">Add a Blog Entry</a>
+                </div>
+                <br>
+                
+                {% block content %}
             
-            {% block content %}
-        
-            
-            {% endblock %}
+                {% endblock %}
 
-
-    </div>
-
+        </div>
+    </body>
     
-
-
-</body>
 </html>

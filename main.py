@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, flash
+from flask import Flask, request, redirect, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -8,7 +8,7 @@ app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
 app.secret_key = '5!MB6orN&205m962'
 
-
+#define class to correspond to db table and fields
 class Blog(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
@@ -19,6 +19,7 @@ class Blog(db.Model):
         self.title = title
         self.body = body
 
+#define request handlers
 @app.route('/blog')
 def show_blog():
 
@@ -61,8 +62,6 @@ def newpost():
 
     return render_template('newpost.html', page_title="Add a Blog Entry")
 
-
-    
 
 
 if __name__ == '__main__':
