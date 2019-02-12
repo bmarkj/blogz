@@ -3,20 +3,90 @@
 
     <head>
         <title>{{title}}</title>
-        <link rel= "stylesheet" type= "text/css" 
-            href= "{{ url_for('static', filename='bab_style.css')}}">
-
+        <style>
+            html {
+                background-color: silver
+            }
+            body {
+                width: 1020px;
+                margin: auto;
+                background-color: white;
+            }
+            ul {
+                list-style: none;
+            }
+            #main {
+                width: 960px;
+            }
+            .nav{
+                float: left;
+                padding: 15px;            
+            }
+            .single {
+                padding:15px;
+            }
+            form {
+                padding: 15px;
+            }
+            input[type=submit] {
+                display: block;
+                margin: 0 auto;
+                text-align: center;
+                width: 150px;
+                background-color:darkturquoise;
+                color: white;
+            }
+            h1 {
+                font-size: 2.5em;
+            }
+            .error {
+                color: red;
+                font-size: .8em;
+                font-style: italic;
+                list-style: none;
+            }
+            .flash {
+                clear: left;
+                color: red;
+                font-size: 1.2em;
+                font-stretch: italic;
+                list-style: none;
+            }
+            .post-title {
+                font-size: 1.6em;
+                font-weight: bold;
+            }
+            .author-name {
+                font-size: 1.6em;
+                font-weight: bold;
+            }
+            .center {
+                clear: both;
+                text-align: center;
+            }
+        </style>
+        <!--<link rel="stylesheet" href="{{ url_for('static', filename='blogz_style.css') }}">-->
     </head>
     <body>
         <div id="main">
             <div class="nav">
-                    <a href="/blog">Main Blog Page</a> | <a href="/newpost">Add a Blog Entry</a>
-                </div>
-                <br>
-                
-                {% block content %}
+                <a href="/login">Log In</a> | <a href="/">Home</a> | <a href="/blog">Main Blog Page</a> | <a href="/newpost">Add a Blog Entry | <a href="/logout">Log Out</a>
+            </div>
+            <br>
             
-                {% endblock %}
+            {% with messages = get_flashed_messages() %}
+            <ul>
+                {% for message in messages %}
+                    <li class="flash">{{message}}</li>
+                {% endfor %}
+            </ul>
+            {% endwith %}
+
+            <h1 class="center">{{ page_title }}</h1>
+            {% block content %}
+            
+        
+            {% endblock %}
 
         </div>
     </body>

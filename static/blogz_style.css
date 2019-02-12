@@ -12,20 +12,21 @@ ul {
 #main {
     width: 960px;
 }
-.nav {
+.nav{
     float: left;
     padding: 15px;            
 }
 .single {
     padding:15px;
 }
-table {
+form {
     padding: 15px;
 }
 input[type=submit] {
-    clear: left;
-    margin-top: 15px;
-    width: 100px;
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    width: 150px;
     background-color:darkturquoise;
     color: white;
 }
@@ -34,11 +35,18 @@ h1 {
 }
 .error {
     color: red;
-    font-size: .9em;
+    font-size: .8em;
     font-style: italic;
     list-style: none;
 }
-.title {
+.flash {
+    clear: left;
+    color: red;
+    font-size: 1.2em;
+    font-stretch: italic;
+    list-style: none;
+}
+.post-title {
     font-size: 1.6em;
     font-weight: bold;
 }

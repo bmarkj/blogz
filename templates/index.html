@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+
+{% if not authors %}
+<p class="flash">{{err_authors}}</p>
+{% else %}
+
+    <ul>
+        {% for author in authors %}
+        <li class="author-name">{{author.username}}</li>
+        <br>
+        {% endfor %}
+    </ul>
+    
+{% endif %}
+
+
+    
+
+{% endblock %}

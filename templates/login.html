@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<p class="center">If you don't have an account, you may <a href="/signup">sign up</a> for one</p>
+<form action="/login" method="post">
+    <table>
+        <tr>
+            <td>User Name:</td>
+            <td>
+                <input name="username" type="text" value="{{ username }}">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="error">{{err_username}}</td>
+        </tr>
+        <tr>
+            <td><br></td>
+        </tr>
+        <tr>
+            <td>Password:</td>
+            <td>
+                <input name="password" type="password">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="error">{{err_password}}</td>
+        </tr>
+        <tr>
+            <td><br></td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="submit" value="Login!"></td>
+        </tr>
+
+    </table>
+    
+</form>
+{% endblock %}
