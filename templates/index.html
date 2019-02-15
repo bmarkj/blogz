@@ -4,13 +4,14 @@
 
 {% block content %}
 
-{% if not authors %}
-<p class="flash">{{err_authors}}</p>
+{% if not users %}
+<p class="flash">{{err_users}}</p>
 {% else %}
 
     <ul>
-        {% for author in authors %}
-        <li class="author-name">{{author.username}}</li>
+        {% for user in users %}
+        <li class="user-name"><a href="./blog?userID={{user.id}}">
+            {{user.username}}</a></li>
         <br>
         {% endfor %}
     </ul>

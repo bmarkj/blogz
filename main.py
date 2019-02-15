@@ -32,14 +32,44 @@ class User(db.Model):
         self.username = username
         self.password = password
 
-#define request handlers
+#DEFINE REQUEST HANDLERS
+#pre-screen all requests to preven unauthorized access to pages reserved for registerd/signed-in users
 @app.before_request 
 def require_login():
     allowed_routes = ['login', 'signup', 'show_blog', 'logout', 'index'] 
     if request.endpoint not in allowed_routes and 'username' not in session:
         flash("Sorry, you must be logged in to see that page")
         return redirect('/login')
+
+#Log in, put user in session and send to /newpost, else return to /login w/ err msgs
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+
+    err_username = ''
+    err_password = ''
+
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
         
+        existing_user = User.query.filter_by(username=username).first() #is user in db?
+        
+        if existing_user:
+            if password == existing_user.password:
+                session['username'] = username
+                flash("Logged in")
+                return redirect('/newpost') 
+            else:
+                err_password = "User password is not correct."
+                return render_template('login.html', username=username, err_password=err_password)
+        else:
+            err_username = "That user name is not recognzed. Please try again or sign up for a new account."
+            return render_template('login.html', page_title = "Log In To Your Blogz Account!", username=username, err_username=err_username)
+        
+    #if not POST, then simply displsy login.html template
+    return render_template('login.html', page_title = "Log In To Your Blogz Account!")
+
+#Register new users; put new user in session and send to /newpost, else return to signup.html w/ err msgs
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
 
@@ -64,7 +94,7 @@ def signup():
                     else:
                         err_username = "That username is already taken."
                 else:
-                    err_username = "The user name must be between 3 and 20 characters long."
+                    err_username = "The user name must be at least 3 characters long."
             else:
                 err_username = "The user name cannot contain spaces."
         else:
@@ -77,7 +107,7 @@ def signup():
                     err_password = ''
                     password = password
                 else:
-                    err_password = "The password must be between 3 and 20 characters long."
+                    err_password = "The password must be at least 3 characters long."
             else:
                 err_password = "The password cannot contain spaces."
         else:
@@ -94,7 +124,7 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
             session['username'] = username
-            return redirect('/blog')
+            return redirect('/newpost')
         else:
             return render_template('signup.html', page_title = "Sign Up For A Blogz Account!",
                 username = username, err_username=err_username, err_password=err_password, err_verify=err_verify)
@@ -102,57 +132,42 @@ def signup():
     #if not POST, then simply display register.html template    
     return render_template('signup.html', page_title = "Sign Up For A Blogz Account!")#display register.html template
 
-@app.route('/login', methods=['POST', 'GET'])
-def login():
-
-    err_username = ''
-    err_password = ''
-
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        
-        existing_user = User.query.filter_by(username=username).first() #is user in db?
-        
-        if existing_user:
-            if password == existing_user.password:
-                session['username'] = username
-                flash("Logged in")
-                return redirect('/newpost') 
-            else:
-                err_password = "User password is not correct."
-                return render_template('login.html', username=username, err_password=err_password)
-        else:
-            err_username = "That user is not recognzed. Please try again or sign up for a new account."
-            return render_template('login.html', page_title = "Log In To Your Blogz Account!", username=username, err_username=err_username)
-        
-    #if not POST, then simply displsy login.html template
-    return render_template('login.html', page_title = "Log In To Your Blogz Account!")
-
+#Get all users from db using User.id, and send that list to index.html for display
 @app.route('/')
 def index():
 
-    err_authors = ''
+    err_users = ''
 
-    authors = User.query.order_by(User.username).all()
-    if not authors:
-        err_authors = "There are no authors signed up yet."
-        return render_template('index.html', err_authors=err_authors, title="Blog Authors", page_title="Blog Authors")
+    users = User.query.order_by(User.id).all()
+    if not users:
+        err_users = "There are no users signed up yet."
+        return render_template('index.html', err_users=err_users, title="Blog Users", page_title="Blog Users")
     else:
-        return render_template('index.html', authors=authors, title="Blog Authors", page_title="Blog Authors")
+        return render_template('index.html', users=users, title="Blog Users", page_title="Blog Users")
 
+#Based on GET param (user vs blog) send to display-post.html(blogID) or all-byuser.html(userID)
 @app.route('/blog')
 def show_blog():
 
-    id = request.args.get('id')
-    if id:
-        blog_entry = Blog.query.filter_by(id=id).first()
+    blogID = request.args.get('blogID')
+    userID = request.args.get('userID')    
 
-        return render_template('display-post.html', blog=blog_entry)
+    if blogID:
+
+        single_blog_entry = Blog.query.filter_by(id=blogID).first()
+        user = User.query.filter_by(id=single_blog_entry.owner_id).first()
+        return render_template('display-post.html', user=user, blog=single_blog_entry)
     
-    posts = Blog.query.all()
-    return render_template('blog.html', title = "Blogz Entries", posts = posts)
+    if userID:
+        user = User.query.filter_by(id=userID).first()
+        blogs_list = Blog.query.filter_by(owner_id = userID).all()
+        return render_template('all-byuser.html', page_title=user.username, blogs_list=blogs_list, user=user)
+    
+    blogs = Blog.query.all()
+    users= User.query.all()
+    return render_template('blog.html', title = "Blogz Entries", users=users, blogs=blogs)
 
+#Validat iput, add post to db, and redirect to /blog w/ blogID (/blog will take that and send to display-post.html)
 @app.route('/newpost', methods = ['POST', 'GET'])
 def newpost():
 
@@ -175,10 +190,10 @@ def newpost():
             err_body = "Please add your content!"
 
         if not err_title and not err_body:
-            new_post = Blog(title, body, owner)
-            db.session.add(new_post)
+            blog = Blog(title, body, owner)
+            db.session.add(blog)
             db.session.commit()
-            return redirect('/blog?id=' + str(new_post.id))
+            return redirect('/blog?blogID=' + str(blog.id))
         else:
             return render_template('newpost.html', page_title = "Add a Blog Entry",
                 title=title, err_title=err_title, body=body, err_body=err_body )
@@ -196,7 +211,7 @@ def is_blank(field):
         return True
 
 def is_wrongsize(field):
-    if len(field) < 3 or len(field) > 20:
+    if len(field) < 3:
         return True
 
 def has_space(field):

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    
+    {% if blogs_list|length == 0 %}
+    <p>No blogs by this user yet.</p>
+    {% else %}
+
+        {% for blog in blogs_list  %}
+            <ul class="single">
+                <li class="blog-title">
+                    {{blog.title}}
+                </li>
+                <li>
+                    {{blog.body}}
+                </li>
+            </ul>
+        {% endfor %}
+
+    {% endif %}
+
+
+{% endblock %}

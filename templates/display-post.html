@@ -1,9 +1,14 @@
+<!--This template displays individual posts by a given user. It is called from the /blog
+handler when the blogID is known. The blogID value gets sent to /blog as a query parameter 
+when the blog title link in blog.html is clicked-->
+
 {% extends 'base.html' %}
 
 {% block content %}
 
     <h2 class="post-title center">{{ blog.title }}</h2>
     <p class="single">{{ blog.body }}</p>
+    <p class="tag">Written by: <a href="/blog?userID={{user.id}}" >{{user.username}}</a></p>
     <br>
 
 {% endblock %}

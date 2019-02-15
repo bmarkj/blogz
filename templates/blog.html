@@ -4,14 +4,15 @@
 
     <h1 class="center">{{ title }}</h1>
     
-    {% if posts|length == 0 %}
+    {% if blogs|length == 0 %}
     <p>No posts yet</p>
     {% else %}
 
         <ul>
-            {% for post in posts %}
-            <li class="post-title"><a href="./blog?id={{post.id}}">{{ post.title }}</a></li>
-            <li>{{post.body}}</li>
+            {% for blog in blogs %}
+            <li class="blog-title"><a href="./blog?blogID={{blog.id}}">{{ blog.title }}</a></li>
+            <li>{{blog.body}}</li>
+            <li class="tag">Written by: <a href="/blog?userID={{blog.owner.id}}">{{ blog.owner.username }}</a></li>
             <br>
             <hr/>
             <br>
