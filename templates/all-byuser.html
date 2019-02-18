@@ -3,7 +3,7 @@
 {% block content %}
     
     {% if blogs_list|length == 0 %}
-    <p>No blogs by this user yet.</p>
+    <p class="form">No blogs by this user yet.</p>
     {% else %}
 
         {% for blog in blogs_list  %}
