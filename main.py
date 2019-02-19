@@ -202,8 +202,12 @@ def newpost():
 
 @app.route('/logout')
 def logout():
-    del session['username'] #delete user from session
-    return redirect('/blog') 
+    if session.get('logged_in') is not None:
+        del session['username']
+        return redirect('/blog')
+    else:
+        flash("Okay, but there was no one logged in. No harm, no foul!")
+        return redirect('/blog') 
 
 #define global functions
 def is_blank(field):
